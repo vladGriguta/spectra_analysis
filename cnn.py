@@ -239,7 +239,7 @@ def model_train(X_train,y_train,X_val,y_val):
 
 if __name__ == '__main__':
     # load all spectra in internal memory 
-    locationSpectra = '../spectraClassification/spectra_matched_multiproc/'
+    locationSpectra = '../spectra/'
     location_plots = 'CNN_plots_newInput/'
     if not os.path.exists(location_plots):
         os.makedirs(location_plots) 
