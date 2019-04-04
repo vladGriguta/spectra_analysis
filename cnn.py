@@ -38,27 +38,29 @@ def load_obj(name ):
 def read_data(locationSpectra):
     filenames = glob.glob(locationSpectra+'*pkl')
     
+    scale_length = 100
     cut_off = 5000
-    X = np.zeros((4900,cut_off,2))
+    X = np.zeros((int(len(filenames)/scale_length),cut_off,2))
     #wavelength = np.zeros((len(filenames),cut_off))
-    X_scaled = np.zeros((4900,cut_off,2))
+    X_scaled = np.zeros((int(len(filenames)/scale_length),cut_off,2))
     y = []
     sc = MinMaxScaler()
     counter_excluded = 0
-    for i in range(4900):
+    
+    for i in range(int(len(filenames)/scale_length)):
         df_current = load_obj(filenames[i])
         l = len(df_current['model'])
-        
+
         wavelength = np.power(10,df_current['loglam'][0:l])
         flux = df_current['model'][0:l]
-        flux_scaled = np.array(sc.fit_transform(np.array(flux).reshape(-1,1))).reshape(len(flux))
-        
+        flux_scaled = np.array(sc.fit_transform(np.array(flux).reshape(-1,1))).reshape(flux.shape)
+
         X[i][0:l] = np.stack((wavelength,flux),axis=1)
-        
+
         # Scale result in new array
         X_scaled[i][0:l] = np.stack((wavelength,flux_scaled),axis=1)
-        
         y.append(df_current['information'].iloc[0])
+
     X = X[0:(len(X)-counter_excluded)]
     X = np.array(X)
     wavelength = wavelength[0:(len(X)-counter_excluded)]
