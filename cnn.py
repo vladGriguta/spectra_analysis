@@ -231,9 +231,7 @@ def model_train(X_train,y_train,X_val,y_val):
                         validation_data=validation_generator,validation_steps=steps_val,
                         epochs=no_epochs,use_multiprocessing=True,workers=-1)
 
-    history = model.fit(X_train, y_train, epochs=params['no_epochs'], batch_size=batch_size, validation_data=(X_val, y_val))
-
-    return model, history
+    return model, model.history
 
 
 
