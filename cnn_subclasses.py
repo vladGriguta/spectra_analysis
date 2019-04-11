@@ -1,26 +1,26 @@
-#!/usr/bin/env python
-# coding: utf-8
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Apr 11 12:38:35 2019
+
+@author: vladgriguta
+"""
+
 locationSpectra = 'spectra/'
+
 # imports
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import time
 import pickle
 import os
 import glob
 from sklearn.metrics import confusion_matrix #, classification_report, f1_score, roc_curve, auc
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
-import keras
-from keras import backend as tensorflow
-from keras.models import Sequential
-from keras.layers import Dense, Dropout, Activation, Flatten
-from keras.layers import Conv2D, MaxPooling2D, Conv1D, MaxPooling1D
-from keras.utils import np_utils
-from keras.initializers import random_uniform
-from keras import layers
-from keras.optimizers import RMSprop
+
+
+
 import gc
 gc.collect()
 
@@ -58,7 +58,7 @@ def read_data(locationSpectra):
         # print checkpoints
         if(i % int(number_files_toRead/10) == 0):
             print('Progress is '+str(round(100*i/number_files_toRead))+' %')
-            
+        
         df_current = load_obj(filenames[i])
         l = len(df_current['model'])
 
@@ -130,6 +130,7 @@ def prepare_cnn_entries(X,n_nodes=100):
         
 
 def encode_data(y):
+    from keras.utils import np_utils
     # encode class values as integers
     from sklearn.preprocessing import LabelEncoder
     encoder = LabelEncoder()
@@ -192,8 +193,10 @@ def model_train(X_train,y_train,X_val,y_val):
     from keras.models import Sequential
     from keras.utils import Sequence
     from keras.layers import Dense
-    from keras.layers import LSTM
     from keras.layers import Dropout
+    from keras import layers
+    from keras.optimizers import RMSprop
+
     import keras
     import tensorflow as tf
     from keras.backend.tensorflow_backend import set_session
