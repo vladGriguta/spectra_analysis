@@ -36,9 +36,13 @@ def load_obj(name ):
 
 
 def read_data(locationSpectra):
-    filenames = glob.glob(locationSpectra+'*pkl')
     
-    scale_length = 10
+    print('Starting reading the names of the files containing spectra.....')
+    filenames = glob.glob(locationSpectra+'*pkl')
+    print('Finished.......................................................')
+    print('Total length of dataset read is '+str(len(filenames))+' spectra.')
+    
+    scale_length = 100
     cut_off = 5000
     X = np.zeros((int(len(filenames)/scale_length),cut_off,2))
     #wavelength = np.zeros((len(filenames),cut_off))
@@ -251,7 +255,6 @@ if __name__ == '__main__':
         os.makedirs(location_plots) 
     
     X,y,_ = read_data(locationSpectra)
-    print('Total length of dataset read is '+str(len(X)))
 
     n_nodes = 200
     X = prepare_cnn_entries(X,n_nodes)
