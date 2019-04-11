@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
-
+locationSpectra = 'spectra/'
 # imports
 import numpy as np
 import pandas as pd
@@ -63,7 +63,7 @@ def read_data(locationSpectra):
 
     X = X[0:(len(X)-counter_excluded)]
     X = np.array(X)
-    wavelength = wavelength[0:(len(X)-counter_excluded)]
+    #wavelength = wavelength[0:(len(X)-counter_excluded)]
     y = np.array(y)
     
     return X,y,X_scaled
@@ -239,13 +239,14 @@ def model_train(X_train,y_train,X_val,y_val):
 
 if __name__ == '__main__':
     # load all spectra in internal memory 
-    locationSpectra = '../spectra/'
+    
     location_plots = 'CNN_plots_newInput/'
     if not os.path.exists(location_plots):
         os.makedirs(location_plots) 
     
     X,y,_ = read_data(locationSpectra)
-    
+    print('Total length of dataset read is '+str(len(X)))
+
     n_nodes = 200
     X = prepare_cnn_entries(X,n_nodes)
     X = X.reshape((X.shape[0],X.shape[1],1))
