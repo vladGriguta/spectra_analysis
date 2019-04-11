@@ -185,10 +185,10 @@ def model_train(X_train,y_train,X_val,y_val):
     from keras.layers import Dropout
     import keras
     import tensorflow as tf
-	from keras.backend.tensorflow_backend import set_session
-	config = tf.ConfigProto()
-	config.gpu_options.allow_growth = True
-	set_session(tf.Session(config=config))
+    from keras.backend.tensorflow_backend import set_session
+    config = tf.ConfigProto()
+    config.gpu_options.allow_growth = True
+    set_session(tf.Session(config=config))
 
     class DataSequenceGenerator(Sequence):
 
