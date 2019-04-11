@@ -38,7 +38,7 @@ def load_obj(name ):
 def read_data(locationSpectra):
     filenames = glob.glob(locationSpectra+'*pkl')
     
-    scale_length = 100
+    scale_length = 10
     cut_off = 5000
     X = np.zeros((int(len(filenames)/scale_length),cut_off,2))
     #wavelength = np.zeros((len(filenames),cut_off))
@@ -217,9 +217,11 @@ def model_train(X_train,y_train,X_val,y_val):
         # Initialising the RNN
         model = Sequential()
 
-        model.add(layers.Conv1D(64, 6, activation='relu',  input_shape=X_train[0].shape)) # Input shape is VERY fiddly. May need to try different things. 
+        model.add(layers.Conv1D(32, 10, activation='relu',  input_shape=X_train[0].shape)) # Input shape is VERY fiddly. May need to try different things. 
         model.add(Dropout(dropout_rate))
-        model.add(layers.Conv1D(128, 6, activation='relu'))
+        model.add(layers.Conv1D(64, 6, activation='relu')) # Input shape is VERY fiddly. May need to try different things. 
+        model.add(Dropout(dropout_rate))
+        model.add(layers.Conv1D(128, 6, activation='sigmoid'))
         model.add(layers.GlobalMaxPooling1D())
         model.add(Dense(numberTargets, activation='softmax'))
         print(model.summary())
