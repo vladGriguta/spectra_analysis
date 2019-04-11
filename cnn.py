@@ -228,9 +228,7 @@ def model_train(X_train,y_train,X_val,y_val):
         # Initialising the RNN
         model = Sequential()
 
-        model.add(layers.Conv1D(32, 10, activation='relu',  input_shape=X_train[0].shape)) # Input shape is VERY fiddly. May need to try different things. 
-        model.add(Dropout(dropout_rate))
-        model.add(layers.Conv1D(64, 6, activation='relu')) # Input shape is VERY fiddly. May need to try different things. 
+        model.add(layers.Conv1D(64, 6, activation='relu',  input_shape=X_train[0].shape)) # Input shape is VERY fiddly. May need to try different things. 
         model.add(Dropout(dropout_rate))
         model.add(layers.Conv1D(128, 6, activation='sigmoid'))
         model.add(layers.GlobalMaxPooling1D())
