@@ -36,20 +36,30 @@ def load_obj(name ):
 
 
 def read_data(locationSpectra):
+    """
+    df_current['information'].iloc[0] = class_
+    df_current['information'].iloc[1] = subclass_
+    df_current['information'].iloc[2] = z_
+    df_current['information'].iloc[3] = z_err
+    df_current['information'].iloc[4] = z_warn
+    df_current['information'].iloc[5] = best_obj
+    df_current['information'].iloc[6] = instrument
+    """
+    
     
     print('Starting reading the names of the files containing spectra.....')
     filenames = glob.glob(locationSpectra+'*pkl')
     print('Finished.......................................................')
     print('Total length of dataset read is '+str(len(filenames))+' spectra.')
     
-    scale_length = 100
+    scale_length = 10
     cut_off = 5000
     X = np.zeros((int(len(filenames)/scale_length),cut_off,2))
     #wavelength = np.zeros((len(filenames),cut_off))
     X_scaled = np.zeros((int(len(filenames)/scale_length),cut_off,2))
     y = []
+    idx = []
     sc = MinMaxScaler()
-    counter_excluded = 0
     
     number_files_toRead = int(len(filenames)/scale_length)
     
@@ -58,21 +68,28 @@ def read_data(locationSpectra):
         # print checkpoints
         if(i % int(number_files_toRead/10) == 0):
             print('Progress is '+str(round(100*i/number_files_toRead))+' %')
-        
         df_current = load_obj(filenames[i])
-        l = len(df_current['model'])
+        # Only copy the galaxies and quasars
+        if(df_current['information'].iloc[0] != 'STAR' & 
+           df_current['information'].iloc[1] != ''):
+            l = len(df_current['model'])
+    
+            wavelength = np.power(10,df_current['loglam'][0:l])
+            flux = df_current['model'][0:l]
+            flux_scaled = np.array(sc.fit_transform(np.array(flux).reshape(-1,1))).reshape(flux.shape)
+    
+            X[i][0:l] = np.stack((wavelength,flux),axis=1)
+    
+            # Scale result in new array
+            X_scaled[i][0:l] = np.stack((wavelength,flux_scaled),axis=1)
+            y.append(df_current['information'].iloc[0]+ ', '+
+                     df_current['information'].iloc[1])
+            
+            # save index
+            idx.append(i)
 
-        wavelength = np.power(10,df_current['loglam'][0:l])
-        flux = df_current['model'][0:l]
-        flux_scaled = np.array(sc.fit_transform(np.array(flux).reshape(-1,1))).reshape(flux.shape)
-
-        X[i][0:l] = np.stack((wavelength,flux),axis=1)
-
-        # Scale result in new array
-        X_scaled[i][0:l] = np.stack((wavelength,flux_scaled),axis=1)
-        y.append(df_current['information'].iloc[0])
-
-    X = X[0:(len(X)-counter_excluded)]
+    idx = np.array(idx)
+    X = X[idx]
     X = np.array(X)
     #wavelength = wavelength[0:(len(X)-counter_excluded)]
     y = np.array(y)
@@ -279,7 +296,7 @@ if __name__ == '__main__':
     
     
     # Enter target names 
-    target_names = ['GALAXY', 'QSO', 'STAR']
+    target_names = list(set(y))
     numberTargets = len(target_names) # Useful later (for the final dense layer of CNN).
 
     
