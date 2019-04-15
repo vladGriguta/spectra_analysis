@@ -7,6 +7,9 @@ import gc
 import glob
 import os
 
+locationSpectra = '/spectra'
+locationData = 'preprocessedData/'
+
 # load and save functions
 def save_obj(obj, name ):
     with open(name + '.pkl', 'wb') as f:
@@ -57,7 +60,11 @@ def preproc_data(locationSpectra,n_nodes=100):
             print('Progress is '+str(round(100*i/number_files_toRead))+' %')
         
         # read data
-        df_current = load_obj(filenames[i])
+        try:
+            df_current = load_obj(filenames[i])
+        except:
+            # occasionally it cannot open some files
+            pass
         l = len(df_current['model'])
         wavelength = np.power(10,df_current['loglam'][0:l])
         flux = np.array(df_current['model'][0:l])
@@ -89,9 +96,6 @@ def preproc_data(locationSpectra,n_nodes=100):
 
 
 if __name__ == '__main__':
-
-    locationSpectra = '../spectraClassification/spectra_matched_multiproc/'
-    locationData = 'preprocessedData/'
 
     X,y = preproc_data(locationSpectra,n_nodes=200)
 
