@@ -1,14 +1,14 @@
 
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 import pickle
 import gc
 import glob
 import os
 import multiprocessing
 
-locationSpectra = 'spectra/'
+locationSpectra = '../spectraClassification/spectra_matched_multiproc/'
+#locationSpectra = '../spectra/'
 locationData = 'preprocessedData/'
 n_nodes=200
 
