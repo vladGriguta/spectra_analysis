@@ -37,7 +37,7 @@ def preproc_data(varyingData,numberFilenames):
     
     [locationSpectrum, counter] = varyingData
     
-    if(counter%int(numberFilenames/1000) == 0):
+    if(counter%int(numberFilenames/100) == 0):
         print('progress is: ' +str(round(100*counter/numberFilenames,1))+ ' %')
     
     # guess the range of the wavelengths
@@ -106,12 +106,17 @@ if __name__ == '__main__':
     
     
     X = np.zeros((len(result_list),n_nodes))
+    linesXToDelete = []
     y = []
     for i in range(len(result_list)):
-        X[i] = result_list[i][0]
-        y.append(result_list[i][1])
-        
+        try:
+            y.append(result_list[i][1])
+            X[i] = result_list[i][0]
+        except:
+            linesXToDelete.append(i)
+            pass
     
+    X = np.delete(X,linesXToDelete,axis=0)
     # save all to pkl file
     if not os.path.exists(locationData):
         os.makedirs(locationData)
