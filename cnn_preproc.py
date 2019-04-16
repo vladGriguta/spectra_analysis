@@ -72,7 +72,7 @@ def plot_confusion_matrix(cm, target_names, location):
     fig = plt.figure()
     ax = fig.add_subplot(111)
     cax = ax.matshow(cm)
-    plt.title('Confusion matrix of the classifier')
+    # plt.title('Confusion matrix of the classifier')
     fig.colorbar(cax)
     ax.set_xticklabels([''] + target_names)
     ax.set_yticklabels([''] + target_names)
@@ -156,7 +156,7 @@ def model_train(X_train,y_train,X_val,y_val):
 if __name__ == '__main__':
     # load all spectra in internal memory 
     
-    locationPlots = 'CNN_plots_withPreproc/'
+    locationPlots = 'CNN_plots_withPreproc_withScalling/'
     if not os.path.exists(locationPlots):
         os.makedirs(locationPlots) 
     
@@ -169,6 +169,11 @@ if __name__ == '__main__':
     y = np.array(y[0])
         
     dummy_y,encoder_y = encode_data(y)
+    
+    #scaling
+    sc = MinMaxScaler()
+    for i in range(len(X)):
+        X[i] = sc.fit_transform(X[i])
     
     X_train, X_test, y_train, y_test = train_test_split(X, dummy_y, test_size=0.1,  random_state=1)
     X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.1, random_state=1)

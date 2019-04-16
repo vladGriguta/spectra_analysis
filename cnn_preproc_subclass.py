@@ -6,7 +6,7 @@ Created on Tue Apr 16 10:08:56 2019
 @author: vladgriguta
 """
 
-occuranceLimit = 50
+occuranceLimit = 20
 
 locationPreprocSpectra = 'preprocessedData/'
 # imports
@@ -77,15 +77,21 @@ def smooth_curve(points, factor=0.8):
 
 
 def plot_confusion_matrix(cm, target_names, location):
+    
+    # neither of these work
+    plt.rcParams['xtick.bottom'] = plt.rcParams['xtick.labelbottom'] = True
+    plt.rcParams['xtick.top'] = plt.rcParams['xtick.labeltop'] = False
+    plt.rcParams["axes.axisbelow"] = True
+    
     fig = plt.figure()
     ax = fig.add_subplot(111)
     cax = ax.matshow(cm)
-    plt.title('Confusion matrix of the classifier')
+    # plt.title('Confusion matrix of the classifier')
     fig.colorbar(cax)
-    ax.set_xticklabels([''] + target_names)
+    ax.set_xticklabels([''] + target_names, rotation = 45, ha="left")
     ax.set_yticklabels([''] + target_names)
-    plt.xlabel('Predicted')
-    plt.ylabel('True')
+    #plt.xlabel('Predicted')
+    #plt.ylabel('True')
         # Loop over data dimensions and create text annotations.
     fmt = 'd'
     thresh = cm.max() / 2.
@@ -164,7 +170,7 @@ def model_train(X_train,y_train,X_val,y_val):
 if __name__ == '__main__':
     # load all spectra in internal memory 
     
-    locationPlots = 'CNN_plots_withPreproc_galaxySubclasses/'
+    locationPlots = 'CNN_plots_withPreproc_galaxySubclasses_withScalling/'
     if not os.path.exists(locationPlots):
         os.makedirs(locationPlots) 
     
@@ -199,6 +205,11 @@ if __name__ == '__main__':
     print('Remaining dataset after exclusions: '+str(len(y)))        
     
     dummy_y,encoder_y = encode_data(y)
+    
+    #scaling
+    sc = MinMaxScaler()
+    for i in range(len(X)):
+        X[i] = sc.fit_transform(X[i])
     
     X_train, X_test, y_train, y_test = train_test_split(X, dummy_y, test_size=0.1,  random_state=1)
     X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.1, random_state=1)
