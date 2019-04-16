@@ -1,14 +1,14 @@
 
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 import pickle
 import gc
 import glob
 import os
 import multiprocessing
 
-locationSpectra = 'spectra/'
+locationSpectra = '../spectraClassification/spectra_matched_multiproc/'
+#locationSpectra = '../spectra/'
 locationData = 'preprocessedData/'
 n_nodes=200
 
@@ -23,7 +23,7 @@ def load_obj(name ):
 
 
 
-def preproc_data(varyingData):
+def preproc_data(varyingData,numberFilenames):
     
     """
     df_current['information'].iloc[0] = class_
@@ -37,7 +37,6 @@ def preproc_data(varyingData):
     
     [locationSpectrum, counter] = varyingData
     
-    numberFilenames = 4160009
     if(counter%int(numberFilenames/1000) == 0):
         print('progress is: ' +str(round(100*counter/numberFilenames,1))+ ' %')
     
@@ -100,8 +99,9 @@ if __name__ == '__main__':
     for i in range(len(filenames)):
         varyingData.append([filenames[i], counter[i]])
     
+    import itertools
     with multiprocessing.Pool(processes=n_proc) as pool:
-        result_list=pool.starmap(preproc_data, zip(varyingData))
+        result_list=pool.starmap(preproc_data, zip(varyingData,itertools.repeat(len(filenames))))
         pool.close()
     
     
