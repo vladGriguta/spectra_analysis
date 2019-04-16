@@ -6,6 +6,8 @@ Created on Tue Apr 16 10:08:56 2019
 @author: vladgriguta
 """
 
+occuranceLimit = 50
+
 locationPreprocSpectra = 'preprocessedData/'
 # imports
 import numpy as np
@@ -162,7 +164,7 @@ def model_train(X_train,y_train,X_val,y_val):
 if __name__ == '__main__':
     # load all spectra in internal memory 
     
-    locationPlots = 'CNN_plots_withPreproc/'
+    locationPlots = 'CNN_plots_withPreproc_galaxySubclasses/'
     if not os.path.exists(locationPlots):
         os.makedirs(locationPlots) 
     
@@ -175,10 +177,10 @@ if __name__ == '__main__':
     print('Dataset before exclusions: '+str(len(y)))
     
     # exclude stars
-    gal_indexes = (y[0] != 'STAR')
+    gal_indexes = (y[0] != 'STAR  ')
     y = y[gal_indexes]
     X = X[gal_indexes]
-    y = np.array(y[0] + y[1])
+    y = np.array(y[0] +' '+ y[1])
     
     # exclude sparse data
     unique, counts = np.unique(y, return_counts=True)
@@ -187,7 +189,7 @@ if __name__ == '__main__':
     sparse_indexes = []
     for i in range(len(y)):
         # if the class appears less often than 50 times
-        if(dict_counts[y[i]] < 50):
+        if(dict_counts[y[i]] < occuranceLimit):
             sparse_indexes.append(i)
             
     # eliminate current element from y and X
