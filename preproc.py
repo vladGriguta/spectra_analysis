@@ -23,7 +23,7 @@ def load_obj(name ):
 
 
 
-def preproc_data(varyingData):
+def preproc_data(varyingData,numberFilenames):
     
     """
     df_current['information'].iloc[0] = class_
@@ -37,7 +37,6 @@ def preproc_data(varyingData):
     
     [locationSpectrum, counter] = varyingData
     
-    numberFilenames = 4160009
     if(counter%int(numberFilenames/1000) == 0):
         print('progress is: ' +str(round(100*counter/numberFilenames,1))+ ' %')
     
@@ -92,16 +91,19 @@ if __name__ == '__main__':
     print('Total length of dataset read is '+str(len(filenames))+' spectra.')
 
 
-    freeProc = 0
+    freeProc = 4
     n_proc=multiprocessing.cpu_count()-freeProc
-    
+
+	    	
+    filenames = filenames[0:40000]
     counter = list(range(len(filenames)))
     varyingData = []
     for i in range(len(filenames)):
         varyingData.append([filenames[i], counter[i]])
     
+    import itertools
     with multiprocessing.Pool(processes=n_proc) as pool:
-        result_list=pool.starmap(preproc_data, zip(varyingData))
+        result_list=pool.starmap(preproc_data, zip(varyingData,itertools.repeat(len(filenames))))
         pool.close()
     
     
