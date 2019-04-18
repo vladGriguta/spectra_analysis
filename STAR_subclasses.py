@@ -88,10 +88,10 @@ def plot_confusion_matrix(cm, target_names, location):
     
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    cax = ax.matshow(cm)
+    cax = ax.matshow(cm,cmap='Blues')
     # plt.title('Confusion matrix of the classifier')
     fig.colorbar(cax)
-    ax.set_xticklabels([''] + target_names, rotation = 45, ha="left")
+    ax.set_xticklabels([''] + target_names)
     ax.set_yticklabels([''] + target_names)
     #plt.xlabel('Predicted')
     #plt.ylabel('True')
