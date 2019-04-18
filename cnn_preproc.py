@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
-locationPreprocSpectra = 'preprocessedData/'
+locationPreprocSpectra = 'preprocessedData400k/'
 # imports
 import numpy as np
 import pandas as pd
@@ -95,12 +95,12 @@ def model_train(X_train,y_train,X_val,y_val):
     # Importing the Keras libraries and packages
     from keras.utils import Sequence
     import tensorflow as tf
-    """
+    
     from keras.backend.tensorflow_backend import set_session
     config = tf.ConfigProto()
     config.gpu_options.allow_growth = True
     set_session(tf.Session(config=config))
-    """
+    
 
     class DataSequenceGenerator(Sequence):
 
@@ -156,7 +156,11 @@ def model_train(X_train,y_train,X_val,y_val):
 if __name__ == '__main__':
     # load all spectra in internal memory 
     
+<<<<<<< Updated upstream
     locationPlots = 'CNN_plots_withPreproc_withScalling/'
+=======
+    locationPlots = 'CNN_plots_withPreproc_scalling_400k/'
+>>>>>>> Stashed changes
     if not os.path.exists(locationPlots):
         os.makedirs(locationPlots) 
     
@@ -170,11 +174,18 @@ if __name__ == '__main__':
         
     dummy_y,encoder_y = encode_data(y)
     
+<<<<<<< Updated upstream
     #scaling
     sc = MinMaxScaler()
     for i in range(len(X)):
         X[i] = sc.fit_transform(X[i])
     
+=======
+    # scaling X
+    sc = MinMaxScaler()
+    for i in range(len(X)):
+        X[i] = sc.fit_transform(X[i])
+>>>>>>> Stashed changes
     X_train, X_test, y_train, y_test = train_test_split(X, dummy_y, test_size=0.1,  random_state=1)
     X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.1, random_state=1)
     

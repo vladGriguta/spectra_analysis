@@ -6,9 +6,13 @@ Created on Tue Apr 16 10:08:56 2019
 @author: vladgriguta
 """
 
+<<<<<<< Updated upstream
 occuranceLimit = 20
+=======
+occuranceLimit = 100
+>>>>>>> Stashed changes
 
-locationPreprocSpectra = 'preprocessedData/'
+locationPreprocSpectra = 'preprocessedData400k/'
 # imports
 import numpy as np
 import pandas as pd
@@ -109,12 +113,12 @@ def model_train(X_train,y_train,X_val,y_val):
     # Importing the Keras libraries and packages
     from keras.utils import Sequence
     import tensorflow as tf
-    """
+    
     from keras.backend.tensorflow_backend import set_session
     config = tf.ConfigProto()
     config.gpu_options.allow_growth = True
     set_session(tf.Session(config=config))
-    """
+    
 
     class DataSequenceGenerator(Sequence):
 
@@ -154,7 +158,7 @@ def model_train(X_train,y_train,X_val,y_val):
 
     model = baseline_model()
     model.compile(optimizer=RMSprop(lr=0.0100), loss='categorical_crossentropy',metrics=['acc'])
-    no_epochs = 20
+    no_epochs = 10
     #######################################################################
     config = tf.ConfigProto(device_count={"CPU": 20})
     keras.backend.tensorflow_backend.set_session(tf.Session(config=config))
@@ -170,7 +174,11 @@ def model_train(X_train,y_train,X_val,y_val):
 if __name__ == '__main__':
     # load all spectra in internal memory 
     
+<<<<<<< Updated upstream
     locationPlots = 'CNN_plots_withPreproc_galaxySubclasses_withScalling/'
+=======
+    locationPlots = 'CNN_plots_withPreproc_galaxySubclasses_2/'
+>>>>>>> Stashed changes
     if not os.path.exists(locationPlots):
         os.makedirs(locationPlots) 
     
@@ -205,6 +213,7 @@ if __name__ == '__main__':
     print('Remaining dataset after exclusions: '+str(len(y)))        
     
     dummy_y,encoder_y = encode_data(y)
+<<<<<<< Updated upstream
     
     #scaling
     sc = MinMaxScaler()
@@ -213,6 +222,16 @@ if __name__ == '__main__':
     
     X_train, X_test, y_train, y_test = train_test_split(X, dummy_y, test_size=0.1,  random_state=1)
     X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.1, random_state=1)
+=======
+
+    # scale x
+    sc = MinMaxScaler()
+    for i in range(len(X)):
+        X[i] = sc.fit_transform(X[i])    
+
+    X_train, X_test, y_train, y_test = train_test_split(X, dummy_y, test_size=0.2,  random_state=1)
+    X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.2, random_state=1)
+>>>>>>> Stashed changes
     
     
     # Enter target names

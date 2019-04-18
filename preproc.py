@@ -7,10 +7,10 @@ import glob
 import os
 import multiprocessing
 
-locationSpectra = '../spectraClassification/spectra_matched_multiproc/'
-#locationSpectra = '../spectra/'
-locationData = 'preprocessedData/'
-n_nodes=200
+#locationSpectra = '../spectraClassification/spectra_matched_multiproc/'
+locationSpectra = 'spectra/'
+locationData = 'preprocessedDataFull/'
+n_nodes=500
 
 # load and save functions
 def save_obj(obj, name ):
@@ -91,9 +91,17 @@ if __name__ == '__main__':
     print('Total length of dataset read is '+str(len(filenames))+' spectra.')
 
 
+<<<<<<< Updated upstream
     freeProc = 0
     n_proc=multiprocessing.cpu_count()-freeProc
     
+=======
+    freeProc = 5
+    n_proc=multiprocessing.cpu_count()-freeProc
+
+	    	
+    # filenames = filenames[0:400000]
+>>>>>>> Stashed changes
     counter = list(range(len(filenames)))
     varyingData = []
     for i in range(len(filenames)):
