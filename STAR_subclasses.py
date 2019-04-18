@@ -91,8 +91,6 @@ def plot_confusion_matrix(cm, target_names, location):
     cax = ax.matshow(cm,cmap='Blues')
     # plt.title('Confusion matrix of the classifier')
     fig.colorbar(cax)
-    ax.set_xticklabels([''] + target_names)
-    ax.set_yticklabels([''] + target_names)
     #plt.xlabel('Predicted')
     #plt.ylabel('True')
         # Loop over data dimensions and create text annotations.
@@ -104,6 +102,10 @@ def plot_confusion_matrix(cm, target_names, location):
                     ha="center", va="center",
                     color="white" if cm[i, j] > thresh else "black")
     fig.tight_layout()
+    ax.set_xticks(target_names)
+    ax.set_xticklabels( target_names, rotation = 45 )
+    ax.set_yticks(target_names)
+    ax.set_yticklabels( target_names )
     plt.savefig(location+'ConfusionMatrix')
     plt.close()
     return ax
