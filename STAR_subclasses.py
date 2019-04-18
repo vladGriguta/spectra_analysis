@@ -9,7 +9,7 @@ Created on Thu Apr 18 11:45:57 2019
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-occuranceLimit = 20
+occurancePercentage = 0.05
 
 locationPreprocSpectra = 'preprocessedData/'
 # imports
@@ -209,6 +209,10 @@ if __name__ == '__main__':
     unique, counts = np.unique(y, return_counts=True)
     dict_counts = dict(zip(unique, counts))
     
+    
+    # compute the occurance limit by adjusting the expected number of samples
+    # in each class with the occurance percentage
+    occuranceLimit = int(occurancePercentage * len(y) / len(unique))
     sparse_indexes = []
     for i in range(len(y)):
         # if the class appears less often than 50 times
