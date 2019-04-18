@@ -91,9 +91,23 @@ def plot_confusion_matrix(cm, target_names, location):
     cax = ax.matshow(cm,cmap='Blues')
     # plt.title('Confusion matrix of the classifier')
     fig.colorbar(cax)
-    #plt.xlabel('Predicted')
-    #plt.ylabel('True')
-        # Loop over data dimensions and create text annotations.
+    """
+    #ax.set_xticks(target_names)
+    ax.set_xticklabels( [''] + target_names )
+    #ax.set_yticks(target_names)
+    ax.set_yticklabels( [''] + target_names )
+    """
+    ax.set(xticks=np.arange(cm.shape[1]),
+           yticks=np.arange(cm.shape[0]),
+           # ... and label them with the respective list entries
+           xticklabels=target_names, yticklabels=target_names,
+           ylabel='True label',
+           xlabel='Predicted label')
+    # Rotate the tick labels and set their alignment.
+    plt.setp(ax.get_xticklabels(), rotation=45, ha="left",
+             rotation_mode="anchor")
+
+    # Loop over data dimensions and create text annotations.
     fmt = 'd'
     thresh = cm.max() / 2.
     for i in range(cm.shape[0]):
@@ -102,10 +116,6 @@ def plot_confusion_matrix(cm, target_names, location):
                     ha="center", va="center",
                     color="white" if cm[i, j] > thresh else "black")
     fig.tight_layout()
-    ax.set_xticks(target_names)
-    ax.set_xticklabels( target_names, rotation = 45 )
-    ax.set_yticks(target_names)
-    ax.set_yticklabels( target_names )
     plt.savefig(location+'ConfusionMatrix')
     plt.close()
     return ax
