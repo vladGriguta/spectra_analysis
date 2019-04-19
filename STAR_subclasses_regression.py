@@ -19,7 +19,7 @@ Created on Thu Apr 18 11:45:57 2019
 
 occurancePercentage = 0.05
 
-locationPreprocSpectra = 'preprocessedData400K/'
+locationPreprocSpectra = 'preprocessedData/'
 # imports
 import numpy as np
 import pandas as pd
@@ -153,12 +153,13 @@ if __name__ == '__main__':
     star_indexes = (y[0] == 'STAR  ')
     y = y[star_indexes]
     X = X[star_indexes]
-    y = np.vectorize(dictSpectra.get)(np.array(y[1].astype(str).str[0:2]))
+    # y = np.vectorize(dictSpectra.get)(np.array(y[1].astype(str).str[0:2]))
+    # y = np.array([dictSpectra[x] for x in np.array(y[1].astype(str).str[0:2])])
+    y = np.array([dictSpectra.get(key,-1) for key in np.array(y[1].astype(str).str[0:2])])
     
-    idx_matched = (y != None)
+    idx_matched = (y != -1)
     y = y[idx_matched]
     X = X[idx_matched]
-    numberTargets = len(list(set(y)))
     
     print('Remaining dataset after exclusions: '+str(len(y)))
     
@@ -166,19 +167,26 @@ if __name__ == '__main__':
     sc = MinMaxScaler()
     for i in range(len(X)):
         X[i] = sc.fit_transform(X[i])
+        
+    # need to scale y as well
+    scaler_y = MinMaxScaler()
+    y = scaler_y.fit_transform(y.reshape(-1,1))
     
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2,  random_state=1)
     X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.2, random_state=1)
     
     
     model, history = model_train(X_train,y_train,X_val,y_val)
-
+    
     predictions = model.predict(X_test)
+    
+    predictions_reversed = scaler_y.inverse_transform(predictions)
+    y_test_reversed = scaler_y.inverse_transform(y_test)
     
     
     fig, ax = plt.subplots()
-    ax.scatter(y_test, predictions)
-    ax.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'k--', lw=4)
+    ax.scatter(y_test_reversed, predictions_reversed)
+    ax.plot([y_test_reversed.min(), y_test_reversed.max()], [y_test_reversed.min(), y_test_reversed.max()], 'k--', lw=4)
     ax.set_xlabel('Measured')
     ax.set_ylabel('Predicted')
     plt.savefig(locationPlots+'plotPredictions')
@@ -229,6 +237,5 @@ if __name__ == '__main__':
     
     # Now let's see the results on Test data; rather than just training and validation sets
     score = model.evaluate(X_test, y_test, verbose=0)
-    print('Test loss:', score[0])
-    print('Test accuracy:', score[1])
-    print('Note that in multi-class and imbalanced classification problems, test accuracy is not an ideal metric')
+    print(model.metrics_names[0], score[0])
+    print(model.metrics_names[1], score[1])
