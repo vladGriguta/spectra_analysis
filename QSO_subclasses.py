@@ -170,7 +170,7 @@ def model_train(X_train,y_train,X_val,y_val):
 
     model = baseline_model()
     model.compile(optimizer=RMSprop(lr=0.0100), loss='categorical_crossentropy',metrics=['acc'])
-    no_epochs = 10
+    no_epochs = 2
     #######################################################################
     config = tf.ConfigProto(device_count={"CPU": 20})
     keras.backend.tensorflow_backend.set_session(tf.Session(config=config))
