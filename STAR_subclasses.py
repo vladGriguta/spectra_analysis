@@ -11,7 +11,7 @@ Created on Thu Apr 18 11:45:57 2019
 
 occurancePercentage = 0.05
 
-locationPreprocSpectra = 'preprocessedData/'
+locationPreprocSpectra = 'preprocessedData400k/'
 # imports
 import numpy as np
 import pandas as pd
@@ -200,9 +200,9 @@ if __name__ == '__main__':
     print('Dataset before exclusions: '+str(len(y)))
     
     # exclude stars
-    gal_indexes = (y[0] == 'STAR  ')
-    y = y[gal_indexes]
-    X = X[gal_indexes]
+    star_indexes = (y[0] == 'STAR  ')
+    y = y[star_indexes]
+    X = X[star_indexes]
     y = np.array(y[1].astype(str).str[0])
     
     # exclude sparse data
@@ -256,6 +256,7 @@ if __name__ == '__main__':
     plt.ylabel('Accuracy')
     plt.title('Model Accuracy (Unsmoothed)')
     plt.legend(['train', 'valid'], loc='upper left')
+    plt.grid(True)
     plt.savefig(locationPlots+'accuracy.png')
     plt.close()
     
@@ -267,6 +268,7 @@ if __name__ == '__main__':
     plt.ylabel('Loss')
     plt.title('Model Loss')
     plt.legend(['train', 'valid'], loc='upper right')
+    plt.grid(True)
     plt.savefig(locationPlots+'loss.png')
     plt.close()
     
@@ -275,6 +277,7 @@ if __name__ == '__main__':
     plt.plot(smooth_curve(history.history['val_acc']), 'b', label='Smoothed validation acc')
     plt.title('Training and validation Accuracy (smoothed')
     plt.legend()
+    plt.grid(True)
     plt.savefig(locationPlots+'accuracy_smoothed.png')
     plt.close()
     

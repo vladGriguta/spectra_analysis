@@ -19,7 +19,7 @@ Created on Thu Apr 18 11:45:57 2019
 
 occurancePercentage = 0.05
 
-locationPreprocSpectra = 'preprocessedData/'
+locationPreprocSpectra = 'preprocessedData400k/'
 # imports
 import numpy as np
 import pandas as pd
@@ -187,8 +187,9 @@ if __name__ == '__main__':
     fig, ax = plt.subplots()
     ax.scatter(y_test_reversed, predictions_reversed)
     ax.plot([y_test_reversed.min(), y_test_reversed.max()], [y_test_reversed.min(), y_test_reversed.max()], 'k--', lw=4)
-    ax.set_xlabel('Measured')
-    ax.set_ylabel('Predicted')
+    ax.set_xlabel('Measured Temperature (K)')
+    ax.set_ylabel('Predicted Temperature (K)')
+    plt.grid(True)
     plt.savefig(locationPlots+'plotPredictions')
     plt.close()
     
@@ -202,6 +203,7 @@ if __name__ == '__main__':
     plt.ylabel('Accuracy')
     plt.title('Model Accuracy (Unsmoothed)')
     plt.legend(['train', 'valid'], loc='upper left')
+    plt.grid(True)
     plt.savefig(locationPlots+'accuracy.png')
     plt.close()
     
@@ -213,6 +215,7 @@ if __name__ == '__main__':
     plt.ylabel('Loss')
     plt.title('Model Loss')
     plt.legend(['train', 'valid'], loc='upper right')
+    plt.grid(True)
     plt.savefig(locationPlots+'loss.png')
     plt.close()
     
@@ -231,6 +234,7 @@ if __name__ == '__main__':
     plt.plot(smooth_curve(history.history['val_loss']), 'b', label='Smoothed validation loss')
     plt.title('Training and validation loss (Smoothed)')
     plt.legend()
+    plt.grid(True)
     plt.savefig(locationPlots+'loss_smoothed.png')
     plt.close()
     
@@ -238,4 +242,5 @@ if __name__ == '__main__':
     # Now let's see the results on Test data; rather than just training and validation sets
     score = model.evaluate(X_test, y_test, verbose=0)
     print(model.metrics_names[0], score[0])
+    print(model.metrics_names[1], score[1])
     print(model.metrics_names[1], score[1])

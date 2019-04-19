@@ -193,6 +193,7 @@ if __name__ == '__main__':
     ax.plot([y_test_reversed.min(), y_test_reversed.max()], [y_test_reversed.min(), y_test_reversed.max()], 'k--', lw=4)
     ax.set_xlabel('Measured Redshift')
     ax.set_ylabel('Predicted Redshift')
+    plt.grid(True)
     plt.savefig(locationPlots+'plotPredictions')
     plt.close()
     
@@ -206,6 +207,7 @@ if __name__ == '__main__':
     plt.ylabel('Accuracy')
     plt.title('Model Accuracy (Unsmoothed)')
     plt.legend(['train', 'valid'], loc='upper left')
+    plt.grid(True)
     plt.savefig(locationPlots+'accuracy.png')
     plt.close()
     
@@ -217,6 +219,7 @@ if __name__ == '__main__':
     plt.ylabel('Loss')
     plt.title('Model Loss')
     plt.legend(['train', 'valid'], loc='upper right')
+    plt.grid(True)
     plt.savefig(locationPlots+'loss.png')
     plt.close()
     
@@ -235,6 +238,7 @@ if __name__ == '__main__':
     plt.plot(smooth_curve(history.history['val_loss']), 'b', label='Smoothed validation loss')
     plt.title('Training and validation loss (Smoothed)')
     plt.legend()
+    plt.grid(True)
     plt.savefig(locationPlots+'loss_smoothed.png')
     plt.close()
     
