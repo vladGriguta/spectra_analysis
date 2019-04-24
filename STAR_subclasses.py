@@ -18,7 +18,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import pickle
 import os
-from sklearn.metrics import confusion_matrix #, classification_report, f1_score, roc_curve, auc
+from sklearn.metrics import confusion_matrix, f1_score #, classification_report, f1_score, roc_curve, auc
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 import keras
@@ -244,7 +244,11 @@ if __name__ == '__main__':
 
     predictions = model.predict_proba(X_test)
     predicted_labels = predictions.argmax(axis=1) # Converts probabilities (e.g. 0.035 0.001 0.704 0.260) to labels (e.g. 0 0 1 0)
+    y_pred = np.zeros(predictions.shape)
+    for i in range(len(predicted_labels)):
+        y_pred[i][predicted_labels[i]] = 1.
     
+    f1_score(y_test, y_pred, average='weighted')
     
     # Evaluation 
     plt.close()
