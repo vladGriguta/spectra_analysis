@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 locationPreprocSpectra = 'preprocessedData400k/'
+locationPlots = 'CNN_plots_withPreproc_scalling_400k/'
 # imports
 import numpy as np
 import pandas as pd
@@ -69,16 +70,27 @@ def smooth_curve(points, factor=0.8):
 
 
 def plot_confusion_matrix(cm, target_names, location):
+    
+    # neither of these work
+    plt.rcParams['xtick.bottom'] = plt.rcParams['xtick.labelbottom'] = True
+    plt.rcParams['xtick.top'] = plt.rcParams['xtick.labeltop'] = False
+    plt.rcParams["axes.axisbelow"] = True
+    
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    cax = ax.matshow(cm)
-    # plt.title('Confusion matrix of the classifier')
+    cax = ax.matshow(cm,cmap='Blues')
     fig.colorbar(cax)
-    ax.set_xticklabels([''] + target_names)
-    ax.set_yticklabels([''] + target_names)
-    plt.xlabel('Predicted')
-    plt.ylabel('True')
-        # Loop over data dimensions and create text annotations.
+    ax.set(xticks=np.arange(cm.shape[1]),
+           yticks=np.arange(cm.shape[0]),
+           # ... and label them with the respective list entries
+           xticklabels=target_names, yticklabels=target_names,
+           ylabel='True label',
+           xlabel='Predicted label')
+    # Rotate the tick labels and set their alignment.
+    plt.setp(ax.get_xticklabels(), rotation=45, ha="left",
+             rotation_mode="anchor")
+
+    # Loop over data dimensions and create text annotations.
     fmt = 'd'
     thresh = cm.max() / 2.
     for i in range(cm.shape[0]):
@@ -156,11 +168,7 @@ def model_train(X_train,y_train,X_val,y_val):
 if __name__ == '__main__':
     # load all spectra in internal memory 
     
-<<<<<<< Updated upstream
-    locationPlots = 'CNN_plots_withPreproc_withScalling/'
-=======
-    locationPlots = 'CNN_plots_withPreproc_scalling_400k/'
->>>>>>> Stashed changes
+
     if not os.path.exists(locationPlots):
         os.makedirs(locationPlots) 
     
@@ -174,18 +182,11 @@ if __name__ == '__main__':
         
     dummy_y,encoder_y = encode_data(y)
     
-<<<<<<< Updated upstream
-    #scaling
-    sc = MinMaxScaler()
-    for i in range(len(X)):
-        X[i] = sc.fit_transform(X[i])
-    
-=======
     # scaling X
     sc = MinMaxScaler()
     for i in range(len(X)):
         X[i] = sc.fit_transform(X[i])
->>>>>>> Stashed changes
+
     X_train, X_test, y_train, y_test = train_test_split(X, dummy_y, test_size=0.1,  random_state=1)
     X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.1, random_state=1)
     
