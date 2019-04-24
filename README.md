@@ -26,5 +26,5 @@ This will bind your working directory to the folder /mnt in the singularity cont
 To run your python script use the following command
 
 ```bash
-singularity run --nv -H /raid/scratch/you_area container.simg /mnt/your_script.py
+singularity run --nv -H /raid/scratch/vladg/spectraClassification/spectra_analysis/ GPU_container.simg /mnt/current_script.py
 ```
