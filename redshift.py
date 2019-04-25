@@ -1,21 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Apr 19 21:53:12 2019
-
-@author: vladgriguta
-"""
-
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Apr 19 13:21:55 2019
-
-@author: vladgriguta
-"""
-
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Created on Thu Apr 18 11:45:57 2019
 
@@ -27,7 +9,7 @@ Created on Thu Apr 18 11:45:57 2019
 
 occurancePercentage = 0.05
 
-locationPreprocSpectra = 'preprocessedData400k/'
+locationPreprocSpectra = 'preprocessedData/'
 # imports
 import numpy as np
 import pandas as pd
@@ -114,6 +96,7 @@ def model_train(X_train,y_train,X_val,y_val):
         regressor.add(layers.Conv1D(64, 6, activation='relu',  input_shape=X_train[0].shape)) # Input shape is VERY fiddly. May need to try different things. 
         regressor.add(Dropout(dropout_rate))
         regressor.add(layers.Conv1D(128, 6, activation='relu'))
+        regressor.add(layers.Conv1D(256, 6, activation='relu'))
         regressor.add(layers.GlobalMaxPooling1D())
         regressor.add(Dense(1, activation='sigmoid'))
         print(regressor.summary())
@@ -122,7 +105,7 @@ def model_train(X_train,y_train,X_val,y_val):
 
     model = baseline_model()
     model.compile(optimizer='adam',loss='mean_squared_error',metrics=['mae','accuracy'])
-    no_epochs = 10
+    no_epochs = 20
     #######################################################################
     config = tf.ConfigProto(device_count={"CPU": 20})
     keras.backend.tensorflow_backend.set_session(tf.Session(config=config))
@@ -187,12 +170,17 @@ if __name__ == '__main__':
     predictions_reversed = scaler_y.inverse_transform(predictions)
     y_test_reversed = scaler_y.inverse_transform(y_test)
     
+    # Now let's see the results on Test data; rather than just training and validation sets
+    score = np.array(model.evaluate(X_test, y_test, verbose=0))
+    print(model.metrics_names[0], scaler_y.inverse_transform(score[0].reshape(-1,1))[0][0])
+    print(model.metrics_names[1], scaler_y.inverse_transform(score[1].reshape(-1,1))[0][0])
     
     fig, ax = plt.subplots()
-    ax.scatter(y_test_reversed, predictions_reversed)
+    ax.scatter(y_test_reversed, predictions_reversed,marker='+')
     ax.plot([y_test_reversed.min(), y_test_reversed.max()], [y_test_reversed.min(), y_test_reversed.max()], 'k--', lw=4)
     ax.set_xlabel('Measured Redshift')
     ax.set_ylabel('Predicted Redshift')
+    plt.title('Mean Absolute Error '+ str(round(scaler_y.inverse_transform(score[1].reshape(-1,1))[0][0],2)))
     plt.grid(True)
     plt.savefig(locationPlots+'plotPredictions')
     plt.close()
@@ -243,8 +231,3 @@ if __name__ == '__main__':
     plt.close()
     
     
-    # Now let's see the results on Test data; rather than just training and validation sets
-    score = model.evaluate(X_test, y_test, verbose=0)
-    print(model.metrics_names[0], score[0])
-    print(model.metrics_names[1], score[1])
-    print(model.metrics_names[1], score[1])
