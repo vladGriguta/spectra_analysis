@@ -9,7 +9,7 @@ Created on Thu Apr 18 11:45:57 2019
 
 occurancePercentage = 0.05
 
-locationPreprocSpectra = 'preprocessedData/'
+locationPreprocSpectra = 'preprocessedData400k/'
 # imports
 import numpy as np
 import pandas as pd
@@ -146,7 +146,9 @@ if __name__ == '__main__':
     X = X[z_indexes]
     
     # take the redshifts
+    y_class = np.array(y[0])
     y = np.array(y[2])
+
     
     print('Remaining dataset after exclusions: '+str(len(y)))
     
@@ -158,8 +160,12 @@ if __name__ == '__main__':
     # need to scale y as well
     scaler_y = MinMaxScaler()
     y = scaler_y.fit_transform(y.reshape(-1,1))
+    idx_y = np.arange(len(y))
     
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2,  random_state=1)
+    X_train, X_test, idx_y_train, idx_y_test = train_test_split(X, idx_y, test_size=0.2,  random_state=1)
+    y_train = y[idx_y_train]
+    y_test = y[idx_y_test]
+    y_test_class = y_class[idx_y_test]
     X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.2, random_state=1)
     
     
@@ -176,10 +182,15 @@ if __name__ == '__main__':
     print(model.metrics_names[1], scaler_y.inverse_transform(score[1].reshape(-1,1))[0][0])
     
     fig, ax = plt.subplots()
-    ax.scatter(y_test_reversed, predictions_reversed,marker='+')
+    dict_colors = {'GALAXY':'red','QSO   ':'green','STAR  ':'blue'}
+    ax.scatter( predictions_reversed, y_test_reversed,marker='+',c=list(map(dict_colors.get,y_test_class)))
+    import matplotlib.patches as mpatches
+    plt.legend(handles=[mpatches.Patch(color='red', label='Galaxy'),
+                        mpatches.Patch(color='green', label='Quasar'),
+                        mpatches.Patch(color='blue', label='Star')])
     ax.plot([y_test_reversed.min(), y_test_reversed.max()], [y_test_reversed.min(), y_test_reversed.max()], 'k--', lw=4)
-    ax.set_xlabel('Measured Redshift')
-    ax.set_ylabel('Predicted Redshift')
+    ax.set_xlabel('Predicted Redshift')
+    ax.set_ylabel('Measured Redshift')
     plt.title('Mean Absolute Error '+ str(round(scaler_y.inverse_transform(score[1].reshape(-1,1))[0][0],2)))
     plt.grid(True)
     plt.savefig(locationPlots+'plotPredictions')
