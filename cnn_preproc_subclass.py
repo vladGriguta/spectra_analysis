@@ -6,13 +6,9 @@ Created on Tue Apr 16 10:08:56 2019
 @author: vladgriguta
 """
 
-<<<<<<< Updated upstream
-occuranceLimit = 20
-=======
-occuranceLimit = 100
->>>>>>> Stashed changes
+occurancePercentage = 0.05
 
-locationPreprocSpectra = 'preprocessedData400k/'
+locationPreprocSpectra = 'preprocessedData/'
 # imports
 import numpy as np
 import pandas as pd
@@ -89,14 +85,26 @@ def plot_confusion_matrix(cm, target_names, location):
     
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    cax = ax.matshow(cm)
+    cax = ax.matshow(cm,cmap='Blues')
     # plt.title('Confusion matrix of the classifier')
     fig.colorbar(cax)
-    ax.set_xticklabels([''] + target_names, rotation = 45, ha="left")
-    ax.set_yticklabels([''] + target_names)
-    #plt.xlabel('Predicted')
-    #plt.ylabel('True')
-        # Loop over data dimensions and create text annotations.
+    """
+    #ax.set_xticks(target_names)
+    ax.set_xticklabels( [''] + target_names )
+    #ax.set_yticks(target_names)
+    ax.set_yticklabels( [''] + target_names )
+    """
+    ax.set(xticks=np.arange(cm.shape[1]),
+           yticks=np.arange(cm.shape[0]),
+           # ... and label them with the respective list entries
+           xticklabels=target_names, yticklabels=target_names,
+           ylabel='True label',
+           xlabel='Predicted label')
+    # Rotate the tick labels and set their alignment.
+    plt.setp(ax.get_xticklabels(), rotation=45, ha="left",
+             rotation_mode="anchor")
+
+    # Loop over data dimensions and create text annotations.
     fmt = 'd'
     thresh = cm.max() / 2.
     for i in range(cm.shape[0]):
@@ -174,11 +182,9 @@ def model_train(X_train,y_train,X_val,y_val):
 if __name__ == '__main__':
     # load all spectra in internal memory 
     
-<<<<<<< Updated upstream
-    locationPlots = 'CNN_plots_withPreproc_galaxySubclasses_withScalling/'
-=======
-    locationPlots = 'CNN_plots_withPreproc_galaxySubclasses_2/'
->>>>>>> Stashed changes
+
+    locationPlots = 'CNN_plots_galaxy&qso/'
+
     if not os.path.exists(locationPlots):
         os.makedirs(locationPlots) 
     
@@ -200,6 +206,9 @@ if __name__ == '__main__':
     unique, counts = np.unique(y, return_counts=True)
     dict_counts = dict(zip(unique, counts))
     
+    # compute the occurance limit by adjusting the expected number of samples
+    # in each class with the occurance percentage
+    occuranceLimit = int(occurancePercentage * len(y) / len(unique))
     sparse_indexes = []
     for i in range(len(y)):
         # if the class appears less often than 50 times
@@ -213,16 +222,7 @@ if __name__ == '__main__':
     print('Remaining dataset after exclusions: '+str(len(y)))        
     
     dummy_y,encoder_y = encode_data(y)
-<<<<<<< Updated upstream
     
-    #scaling
-    sc = MinMaxScaler()
-    for i in range(len(X)):
-        X[i] = sc.fit_transform(X[i])
-    
-    X_train, X_test, y_train, y_test = train_test_split(X, dummy_y, test_size=0.1,  random_state=1)
-    X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.1, random_state=1)
-=======
 
     # scale x
     sc = MinMaxScaler()
@@ -231,7 +231,6 @@ if __name__ == '__main__':
 
     X_train, X_test, y_train, y_test = train_test_split(X, dummy_y, test_size=0.2,  random_state=1)
     X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.2, random_state=1)
->>>>>>> Stashed changes
     
     
     # Enter target names
