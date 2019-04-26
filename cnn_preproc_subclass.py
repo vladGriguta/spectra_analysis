@@ -202,7 +202,9 @@ if __name__ == '__main__':
     gal_indexes = (y[0] != 'STAR  ')
     y = y[gal_indexes]
     X = X[gal_indexes]
-    y = np.array(y[0] +' '+ y[1])
+    y_classes = y[0].str.replace(' ','')
+    y_subclasses = y[1].str.split(expand=True)[0].fillna(value='')
+    y = np.array( y_classes + ' ' + y_subclasses )
     
     # exclude sparse data
     unique, counts = np.unique(y, return_counts=True)
