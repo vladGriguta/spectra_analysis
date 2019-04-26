@@ -6,9 +6,9 @@ Created on Tue Apr 16 10:08:56 2019
 @author: vladgriguta
 """
 
-occurancePercentage = 0.05
+occurancePercentage = 0.15
 
-locationPreprocSpectra = 'preprocessedData/'
+locationPreprocSpectra = 'preprocessedData400k/'
 # imports
 import numpy as np
 import pandas as pd
@@ -143,7 +143,7 @@ def model_train(X_train,y_train,X_val,y_val):
 
             return np.array(batch_X), np.array(batch_y)
     
-    dropout_rate = 0.05
+    dropout_rate = 0.1
     params = {'batch_size': 32}
     training_generator = DataSequenceGenerator(X_train, y_train, **params)
     steps_train = len(X_train)/float(params['batch_size'])
@@ -157,7 +157,9 @@ def model_train(X_train,y_train,X_val,y_val):
 
         model.add(layers.Conv1D(64, 6, activation='relu',  input_shape=X_train[0].shape)) # Input shape is VERY fiddly. May need to try different things. 
         model.add(Dropout(dropout_rate))
-        model.add(layers.Conv1D(128, 6, activation='sigmoid'))
+        model.add(layers.Conv1D(128, 4, activation='sigmoid'))
+        model.add(Dropout(dropout_rate))
+        model.add(layers.Conv1D(256, 2, activation='sigmoid'))
         model.add(layers.GlobalMaxPooling1D())
         model.add(Dense(numberTargets, activation='softmax'))
         print(model.summary())
@@ -183,7 +185,7 @@ if __name__ == '__main__':
     # load all spectra in internal memory 
     
 
-    locationPlots = 'CNN_plots_galaxy&qso/'
+    locationPlots = 'CNN_plots_galaxyAndQso/'
 
     if not os.path.exists(locationPlots):
         os.makedirs(locationPlots) 
